@@ -1,8 +1,8 @@
 import Foundation
 
 extension OpenAIAPI {
-    public struct Message: Equatable, Codable {
-        public enum Role: String, Equatable, Codable {
+    public struct Message: Equatable, Codable, Hashable {
+        public enum Role: String, Equatable, Codable, Hashable {
             case system
             case user
             case assistant
