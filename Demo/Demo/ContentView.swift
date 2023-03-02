@@ -53,7 +53,7 @@ struct ContentView: View {
 //                self.completedText = "Error: \(error)"
 //            }
 //        }
-        self.completion = try! OpenAIAPI(apiKey: key).completeChatStreaming(.init(messages: messages))
+        self.completion = try! OpenAIAPI(apiKey: key).completeChatStreamingWithObservableObject(.init(messages: messages))
     }
 }
 

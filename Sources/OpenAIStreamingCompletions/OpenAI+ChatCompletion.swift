@@ -58,37 +58,61 @@ extension OpenAIAPI {
 
     // MARK: - Streaming completion
 
-    public func completeChatStreaming(_ completionRequest: ChatCompletionRequest) throws -> StreamingCompletion {
+    public func completeChatStreaming(_ completionRequest: ChatCompletionRequest) throws -> AsyncStream<Message> {
         var cr = completionRequest
         cr.stream = true
-
         let request = try createChatRequest(completionRequest: cr)
-        let src = EventSource(urlRequest: request)
+
+        return AsyncStream { continuation in
+            let src = EventSource(urlRequest: request)
+
+            var message = Message(role: .assistant, content: "")
+
+            src.onComplete { statusCode, reconnect, error in
+                continuation.finish()
+            }
+            src.onMessage { id, event, data in
+                guard let data, data != "[DONE]" else { return }
+                do {
+                    let decoded = try JSONDecoder().decode(ChatCompletionStreamingResponse.self, from: Data(data.utf8))
+                    if let delta = decoded.choices.first?.delta {
+                        message.role = delta.role ?? message.role
+                        message.content += delta.content ?? ""
+                        continuation.yield(message)
+                    }
+                } catch {
+                    print("Chat completion error: \(error)")
+                }
+            }
+            src.connect()
+        }
+    }
+
+    public func completeChatStreamingWithObservableObject(_ completionRequest: ChatCompletionRequest) throws -> StreamingCompletion {
         let completion = StreamingCompletion()
-        src.onComplete { statusCode, reconnect, error in
-            DispatchQueue.main.async {
-                if let statusCode, statusCode / 100 == 2 {
+        Task {
+            do {
+                for await message in try self.completeChatStreaming(completionRequest) {
+                    DispatchQueue.main.async {
+                        completion.text = message.content
+                    }
+                }
+                DispatchQueue.main.async {
                     completion.status = .complete
                 }
-            }
-        }
-        src.onMessage { id, event, data in
-            guard let data else { return }
-            let textOpt = decodeChatStreamingResponse(jsonStr: data)
-            DispatchQueue.main.async {
-                if let textOpt {
-                    completion.text += textOpt
+            } catch {
+                DispatchQueue.main.async {
+                    completion.status = .error
                 }
             }
         }
-        src.connect()
         return completion
     }
 
     private struct ChatCompletionStreamingResponse: Codable {
         struct Choice: Codable {
             struct MessageDelta: Codable {
-                var role: String?
+                var role: Message.Role?
                 var content: String?
             }
             var delta: MessageDelta
