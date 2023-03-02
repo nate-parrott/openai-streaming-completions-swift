@@ -9,27 +9,51 @@ import SwiftUI
 import OpenAIStreamingCompletions
 
 struct ContentView: View {
-    @State private var prompt = "internet explorer is"
+    @State private var prompt = "what is internet explorer"
     @State private var completion: StreamingCompletion?
+    @State private var completedText: String = ""
+    @AppStorage("key") private var key = ""
 
     var body: some View {
-        ScrollView {
-            VStack {
+        Form {
+            Section {
+                TextField("API key", text: $key)
                 TextField("Prompt to complete", text: $prompt, onCommit: complete)
-                Button("Complete", action: complete)
-                if let completion {
-                    Divider()
-                    CompletionView(completion: completion)
-                        .padding(.top)
-                }
-                Spacer()
+                Button("Complete Text", action: complete)
+                Button("Complete Chat", action: completeChat)
             }
-            .padding(30)
+            if let completion {
+                Section {
+                    CompletionView(completion: completion)
+                }
+            }
+            if completedText != "" {
+                Section {
+                    Text(completedText)
+                }
+            }
         }
     }
 
     private func complete() {
-        self.completion = try! OpenAIAPI(apiKey: "TODO").completeStreaming(.init(prompt: prompt, max_tokens: 256))
+        if key == "" { return }
+        self.completion = try! OpenAIAPI(apiKey: key).completeStreaming(.init(prompt: prompt, max_tokens: 256))
+    }
+
+    private func completeChat() {
+        if key == "" { return }
+        let messages: [OpenAIAPI.Message] = [
+            .init(role: .system, content: "You are a helpful assistant. Answer in one sentence if possible."),
+            .init(role: .user, content: prompt)
+        ]
+//        Task {
+//            do {
+//                self.completedText = try await OpenAIAPI(apiKey: key).completeChat(.init(messages: messages))
+//            } catch {
+//                self.completedText = "Error: \(error)"
+//            }
+//        }
+        self.completion = try! OpenAIAPI(apiKey: key).completeChatStreaming(.init(messages: messages))
     }
 }
 
@@ -37,12 +61,16 @@ private struct CompletionView: View {
     @ObservedObject var completion: StreamingCompletion
 
     var body: some View {
-        VStack(alignment: .leading) {
+        Group {
             Text("\(completion.text)")
                 .multilineTextAlignment(.leading)
                 .lineLimit(nil)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        switch completion.status {
+        case .error: Text("Errror")
+        case .complete: Text("Complete")
+        case .loading: Text("Loading")
+        }
     }
 }
 

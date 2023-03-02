@@ -12,7 +12,6 @@
 		5F43D6DE29A87181002752A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F43D6DD29A87181002752A0 /* Assets.xcassets */; };
 		5F43D6E129A87181002752A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F43D6E029A87181002752A0 /* Preview Assets.xcassets */; };
 		5F43D6F329A8730F002752A0 /* OpenAIStreamingCompletions in Frameworks */ = {isa = PBXBuildFile; productRef = 5F43D6F229A8730F002752A0 /* OpenAIStreamingCompletions */; };
-		5FF36BF529B0264300116A20 /* Secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 5FF36BF429B0264300116A20 /* Secrets.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +22,6 @@
 		5F43D6E029A87181002752A0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5F43D6ED29A87266002752A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5F43D6EF29A87302002752A0 /* openai-streaming-completions-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "openai-streaming-completions-swift"; path = ..; sourceTree = "<group>"; };
-		5FF36BF429B0264300116A20 /* Secrets.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Secrets.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +60,6 @@
 				5F43D6ED29A87266002752A0 /* Info.plist */,
 				5F43D6D929A87180002752A0 /* DemoApp.swift */,
 				5F43D6DB29A87180002752A0 /* ContentView.swift */,
-				5FF36BF429B0264300116A20 /* Secrets.json */,
 				5F43D6DD29A87181002752A0 /* Assets.xcassets */,
 				5F43D6DF29A87181002752A0 /* Preview Content */,
 			);
@@ -156,7 +153,6 @@
 			files = (
 				5F43D6E129A87181002752A0 /* Preview Assets.xcassets in Resources */,
 				5F43D6DE29A87181002752A0 /* Assets.xcassets in Resources */,
-				5FF36BF529B0264300116A20 /* Secrets.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
