@@ -6,6 +6,12 @@ Supports streaming results via `ObservableObject` or `AsyncStream`, and non-stre
 
 Supports message-based models (e.g. ChatGPT) and text-based models (e.g. davinci).
 
+## Installation via Swift Package Manager
+
+You can either:
+- Add this line to your `Package.swift` `dependencies` array: `.package(url: "https://github.com/nate-parrott/openai-streaming-completions-swift", from: "1.0.1")`
+- Use Xcode's `File -> Add Packages` and paste the URL to this repository
+
 ## Calling ChatGPT
 
 ### Provide API key and prompt
