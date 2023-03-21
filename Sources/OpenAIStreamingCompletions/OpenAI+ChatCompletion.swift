@@ -58,7 +58,7 @@ extension OpenAIAPI {
 
     // MARK: - Streaming completion
 
-    public func completeChatStreaming(_ completionRequest: ChatCompletionRequest) throws -> AsyncStream<Message> {
+    public func completeChatStreaming(_ completionRequest: ChatCompletionRequest, _ completion: StreamingCompletion) throws -> AsyncStream<Message> {
         var cr = completionRequest
         cr.stream = true
         let request = try createChatRequest(completionRequest: cr)
@@ -69,7 +69,11 @@ extension OpenAIAPI {
             var message = Message(role: .assistant, content: "")
 
             src.onComplete { statusCode, reconnect, error in
-                continuation.finish()
+                if error != nil {
+                    completion.status = .error
+                } else {
+                    continuation.finish()
+                }
             }
             src.onMessage { id, event, data in
                 guard let data, data != "[DONE]" else { return }
@@ -81,6 +85,7 @@ extension OpenAIAPI {
                         continuation.yield(message)
                     }
                 } catch {
+                    completion.status = .error
                     print("Chat completion error: \(error)")
                 }
             }
@@ -92,7 +97,7 @@ extension OpenAIAPI {
         let completion = StreamingCompletion()
         Task {
             do {
-                for await message in try self.completeChatStreaming(completionRequest) {
+                for await message in try self.completeChatStreaming(completionRequest, completion) {
                     DispatchQueue.main.async {
                         completion.text = message.content
                     }
