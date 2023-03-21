@@ -133,7 +133,7 @@ extension OpenAIAPI {
     }
     
     private func createChatRequest(completionRequest: ChatCompletionRequest) throws -> URLRequest {
-        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+        let url = URL(string: "\(self.origin)/v1/chat/completions")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
