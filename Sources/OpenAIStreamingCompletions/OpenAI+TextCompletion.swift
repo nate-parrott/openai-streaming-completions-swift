@@ -74,7 +74,7 @@ extension OpenAIAPI {
     }
 
     private func createTextRequest(completionRequest: CompletionRequest) throws -> URLRequest {
-        let url = URL(string: "https://api.openai.com/v1/completions")!
+        let url = URL(string: "\(self.origin)/v1/completions")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
