@@ -7,14 +7,20 @@ extension OpenAIAPI {
         var model = "text-davinci-003"
         var max_tokens: Int = 1500
         var temperature: Double = 0.2
+        
+        var presencePenalty: Double = 0.0 // MARK: WIP
+        
         var stream = false
         var stop: [String]?
 
-        public init(prompt: String, model: String = "text-davinci-003", max_tokens: Int = 1500, temperature: Double = 0.2, stop: [String]? = nil) {
+        public init(prompt: String, model: String = "text-davinci-003", max_tokens: Int = 1500, temperature: Double = 0.2, presencePenalty: Double = 0.0, stop: [String]? = nil) {
             self.prompt = prompt
             self.model = model
             self.max_tokens = max_tokens
             self.temperature = temperature
+            
+            self.presencePenalty = presencePenalty // MARK: WIP
+
             self.stop = stop
         }
     }
