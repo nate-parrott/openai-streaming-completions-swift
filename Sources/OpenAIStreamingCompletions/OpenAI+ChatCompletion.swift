@@ -22,11 +22,9 @@ extension OpenAIAPI {
         var model: String
         var max_tokens: Int = 1500
         var temperature: Double = 0.2
-        
-        var presence_penalty: Double = 0.0 // MARK: WIP
-        var frequency_penalty: Double = 0.0 // MARK: WIP
-        var top_p: Double = 1.0 // MARK: WIP
-        
+        var presence_penalty: Double = 0.0
+        var frequency_penalty: Double = 0.0
+        var top_p: Double = 1.0
         var stream = false
         var stop: [String]?
 
@@ -35,11 +33,9 @@ extension OpenAIAPI {
             self.model = model
             self.max_tokens = max_tokens
             self.temperature = temperature
-            
-            self.presence_penalty = presence_penalty // MARK: WIP
-            self.frequency_penalty = frequency_penalty // MARK: WIP
-            self.top_p = top_p // MARK: WIP
-            
+            self.presence_penalty = presence_penalty
+            self.frequency_penalty = frequency_penalty
+            self.top_p = top_p
             self.stop = stop
         }
     }
@@ -55,9 +51,6 @@ extension OpenAIAPI {
 
     public func completeChat(_ completionRequest: ChatCompletionRequest) async throws -> String {
         let request = try createChatRequest(completionRequest: completionRequest)
-        
-        print("completeChat() - request: \(request)")
-        
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw Errors.invalidResponse(String(data: data, encoding: .utf8) ?? "<failed to decode response>")
@@ -75,21 +68,12 @@ extension OpenAIAPI {
         var cr = completionRequest
         cr.stream = true
         let request = try createChatRequest(completionRequest: cr)
-        
-//        print("completeChatStreaming() - request: \(request.debugDescription)")
-        
-        request.debug()
-
         return AsyncStream { continuation in
             let src = EventSource(urlRequest: request)
 
             var message = Message(role: .assistant, content: "")
 
             src.onComplete { statusCode, reconnect, error in
-                print("src.onComplete - statusCode: \(String(describing: statusCode))")
-                print("src.onComplete - reconnect : \(String(describing: reconnect))")
-                print("src.onComplete - error     : \(String(describing: error))")
-
                 continuation.finish()
             }
             
@@ -159,9 +143,6 @@ extension OpenAIAPI {
             request.setValue(orgId, forHTTPHeaderField: "OpenAI-Organization")
         }
         request.httpBody = try JSONEncoder().encode(completionRequest)
-        
-        print("createChatRequest() - completionRequest: \(completionRequest)")
-        print("createChatRequest() - request.httpBody: \(request.httpBody?.description)")
 
         return request
     }

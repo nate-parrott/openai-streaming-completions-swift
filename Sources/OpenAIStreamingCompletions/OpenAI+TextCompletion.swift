@@ -7,11 +7,9 @@ extension OpenAIAPI {
         var model = "text-davinci-003"
         var max_tokens: Int = 1500
         var temperature: Double = 0.2
-        
-        var presence_penalty: Double = 0.0 // MARK: WIP
-        var frequency_penalty: Double = 0.0 // MARK: WIP
-        var top_p: Double = 1.0 // MARK: WIP
-        
+        var presence_penalty: Double = 0.0
+        var frequency_penalty: Double = 0.0
+        var top_p: Double = 1.0
         var stream = false
         var stop: [String]?
 
@@ -20,11 +18,9 @@ extension OpenAIAPI {
             self.model = model
             self.max_tokens = max_tokens
             self.temperature = temperature
-            
-            self.presence_penalty = presence_penalty // MARK: WIP
-            self.frequency_penalty = frequency_penalty // MARK: WIP
-            self.top_p = top_p // MARK: WIP
-            
+            self.presence_penalty = presence_penalty
+            self.frequency_penalty = frequency_penalty
+            self.top_p = top_p
             self.stop = stop
         }
     }
