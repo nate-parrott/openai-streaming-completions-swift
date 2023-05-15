@@ -30,7 +30,7 @@ extension String {
         let range = NSRange(location: 0, length: count)
         var domain = self
         if hasPrefix("https://") {
-            domain = String(dropFirst(8))
+            return false
         }
         let isDomainValid = regex.firstMatch(in: domain, options: [], range: range) != nil
         
